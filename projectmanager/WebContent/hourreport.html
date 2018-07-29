@@ -1,0 +1,124 @@
+<!-- this is the hour reports HTML -->
+<meta charset="windows-1255">
+	<div class="table1" border="1">
+		<div class="content employeetable tablecontent">
+		<div>
+			<span>Year And Month </span>
+		    <span><input type="date" ng-model="yandm" data-format="MM-yyyy" id="yearandmonth" required> </span>
+		    <span>Project</span>
+	        <span>
+		        <select ng-model="project">
+		              <option></option>
+		              <option ng-repeat="project in selectprojectlist" value="{{project.id}}">{{project.projectname}}</option>
+		        </select>
+	        </span>
+	        <span> <input type="submit" value="Show report" ng-click="showReport()"></span> 
+		</div>
+		<h1>Hour Report</h1>
+			<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search">
+			<table class="table table-striped table-bordered" width=100%>
+				<thead>
+					<tr class="trbg">
+						<th>Project</th>
+						<th>Date</th>
+						<th>Start Hour</th>
+						<th>End Hour</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr class="trbg" ng-repeat="x in employeehr | filter:search">
+					<td>{{x.project.projectname}}</td>
+					<td>{{x.date}}</td>
+					<td>{{x.starthour}}</td>
+					<td>{{x.endhour}}</td>
+					<td>{{x.description}}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="content customertable tablecontent">
+		<div>
+			<span>Year And Month </span>
+		    <span><input type="date" ng-model="yandm" data-format="MM-yyyy" id="yearandmonth" required> </span>
+		    <span>Project</span>
+	        <span>
+		        <select ng-model="project">
+		              <option></option>
+		              <option ng-repeat="project in selectprojectlist" value="{{project.id}}">{{project.projectname}}</option>
+		        </select>
+	        </span>
+	        <span> <input type="submit" value="Show report" ng-click="showReport()"></span> 
+		</div>
+		<h1>Hour Report</h1>
+			<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+			<table class="table table-striped table-bordered" width=100%>
+				<thead>
+					<tr class="trbg">
+						<th>Employee</th>
+						<th>Project</th>
+						<th>Date</th>
+						<th>Start Hour</th>
+						<th>End Hour</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr class="trbg" ng-repeat="x in customerhr | filter:search">
+					<td>{{x.employee.firstname}} {{x.employee.lastname}}</td>
+					<td>{{x.project.projectname}}</td>
+					<td>{{x.date}}</td>
+					<td>{{x.starthour}}</td>
+					<td>{{x.endhour}}</td>
+					<td>{{x.description}}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="content managertable tablecontent">
+		<div>
+			<span>Year And Month </span>
+		    <span><input type="date" ng-model="yandm" data-format="MM-yyyy" id="yearandmonth" required> </span>
+		    <span>Employee </span>
+            <span>
+               <select ng-model="employee">
+                    <option></option>
+                	<option  value="{{employee.id}}" ng-repeat="employee in selectemployeelist">{{employee.firstname+" "+employee.lastname}}</option>
+          		</select>
+     		</span>
+		    <span>Project</span>
+	        <span>
+		        <select ng-model="project">
+		              <option></option>
+		              <option ng-repeat="project in selectprojectlist" value="{{project.id}}">{{project.projectname}}</option>
+		        </select>
+	        </span>
+	        <span>Customer</span>
+	        <span>
+		        <select ng-model="customer">
+		              <option></option>
+		              <option ng-repeat="customer in selectcustomerlist" value="{{customer.id}}">{{customer.companyname}}</option>
+		        </select>
+	        </span>
+	        <span> <input type="submit" value="Show report" ng-click="showReport()"></span> 
+		</div>
+		<h1>Hour Report</h1>
+			<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+			<table class="tablecontent table table-striped table-bordered" width=100%>
+				<thead>
+					<tr class="trbg">
+						<th>Employee</th>
+						<th>Project</th>
+						<th>Date</th>
+						<th>Start Hour</th>
+						<th>End Hour</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr class="trbg" ng-repeat="x in allhr | filter:search">
+					<td>{{x.employee.firstname}} {{x.employee.lastname}}</td>
+					<td>{{x.project.projectname}}</td>
+					<td>{{x.date}}</td>
+					<td>{{x.starthour}}</td>
+					<td>{{x.endhour}}</td>
+					<td>{{x.description}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>

@@ -1,0 +1,7 @@
+[
+{"id":"1","companyname":"teva","companynumber":"11","contactname":"takle","email":"takle@gmail.com","phone":"0535648971","user":"takle","delete/edit":"delete/edit"},
+{"id":"2","companyname":"microsoft","companynumber":"12","contactname":"avi","email":"avi@walla.co.il","phone":"0506497823","user":"avi","delete/edit":"delete/edit"},
+{"id":"3","companyname":"intel","companynumber":"13","contactname":"yosef","email":"yosef@gmail.com","phone":"0546981245","user":"yosef","delete/edit":"delete/edit"},
+{"id":"4","companyname":"apple","companynumber":"14","contactname":"steve","email":"steve@gmail.com","phone":"0587486328","user":"steve","delete/edit":"delete/edit"},
+{"id":"5","companyname":"ness","companynumber":"13","contactname":"eitan","email":"eitan@gmail.com","phone":"0548945231","user":"eitan","delete/edit":"delete/edit"}
+]

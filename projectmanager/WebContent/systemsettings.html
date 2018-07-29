@@ -1,0 +1,24 @@
+<!-- this is the system settings HTML -->
+<meta charset="windows-1255">
+	<div class="table1" border="1">
+		<div colspan="3">
+		
+		<h1>Working Hours Per Day</h1> 
+		
+			<h3>Current Hours :</h3>
+			<table class="trbg tablecontent table table-striped table-bordered">
+				<tr>
+					<th>From</th>
+					<th>To</th>
+				</tr>
+				<tr>
+					<td><strong>{{starttime}}</strong></td>
+					<td><strong>{{endtime}}</strong></td>
+				</tr>
+			</table>
+			<!-- <p>From: <strong>{{starttime}}</strong> To: <strong>{{endtime}}</strong></p> -->
+			From: <input type="time" id="starttime">
+			To: <input type="time" id="endtime"><br>
+			<span class="glyphicon glyphicon-cog"></span><input type="submit" value="Set Hours" ng-click="sethours()"> 
+		</div>
+	</div>

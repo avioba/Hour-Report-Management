@@ -1,0 +1,129 @@
+<!-- this is the employees management HTML -->
+<meta charset="windows-1255">
+<div>
+	<div>	
+		<h1>Employees List</h1>
+		<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+			<table class="tablecontent table table-striped table-bordered" width=70%>
+				<thead>
+					<tr class="trbg">
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Email</th>
+						<th>Phone</th>
+						<th>Delete/Edit</th>
+					</tr>
+				</thead>
+				<tr id="tr-{{x.id}}" class="trbg" ng-repeat="x in list1 | filter:search">
+					<td>{{x.firstname}}</td>
+					<td>{{x.lastname}}</td>
+					<td>{{x.email}}</td>
+					<td>{{x.phone}}</td>
+					<td><button style="background-color: red" class="btn btn-default btn-sm" ng-click="deleterow(x.id)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+					<button style="background-color: lightblue" class="btn btn-default btn-sm" ng-click="editrow(x.id)"><span class="glyphicon glyphicon-pencil"> Edit</span></button></td>
+				</tr>
+			</table>
+			</div>
+			<div style="display: none" id="showForm" class="tablecontent" align="left">
+				<table>
+					<tr>
+						<td>
+							First Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="firstname" placeholder="First Name">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Last Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="lastname" placeholder="Last Name">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Email: 
+						</td>
+						<td>
+							<input type="email" ng-model="email" placeholder="Email">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Phone: 
+						</td>
+						<td>
+							<input type="text" ng-model="phone" placeholder="Phone">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							User Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="username" placeholder="User Name">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Password: 
+						</td>
+						<td>
+							<input type="text" ng-model="password" placeholder="Password">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button class="createshow btn btn-default btn-sm" ng-click="create()"><span class="glyphicon glyphicon-plus"> Add</span></button><br>
+							<button class="editshow btn btn-default btn-sm" style="background-color:lightblue" ng-click="edit()"><span class="glyphicon glyphicon-pencil"> Save</span></button><br>
+							<button class="resetshow btn btn-default btn-sm" style="background-color:red" ng-click="resetform()"><span class="glyphicon glyphicon-repeat"></span> Reset</button>
+						</td>
+					</tr>	
+				</table>
+			</div>
+			<button class="btn btn-default btn-sm" ng-click="add()"><span class="glyphicon glyphicon-plus"></span> Create Employee</button>
+			<div>					
+				<table class="tablecontent">
+					<tr>
+						<td colspan="3" align="left">
+							<div>
+							<h1>Attach Employee To Project</h1>
+								<table>
+									<tr>
+										<td>
+											Employee: 
+										</td>
+										<td>
+											<select ng-model="employee">
+												<option value="{{employee.id}}" ng-repeat="employee in list1">
+													{{employee.firstname}} {{employee.lastname}}
+												</option>	
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Project: 
+										</td>
+										<td>
+											<select ng-model="project">
+												<option value="{{project.id}}" ng-repeat="project in selectprojectlist">
+													{{project.projectname}}
+												</option>	
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<button class="btn btn-default" ng-click="employeetoproject()">Attach</button>
+										</td>
+									</tr>
+								</table>
+							</div>	
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>			

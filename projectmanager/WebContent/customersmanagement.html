@@ -1,0 +1,98 @@
+<!-- this is the customers management HTML -->
+<meta charset="windows-1255">
+	<div class="table1" border="1">
+		<div>
+			<h1>Customer List</h1>
+			<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+				<table class="tablecontent table table-striped table-bordered" width=80%>
+					<thead>
+						<tr class="trbg">
+							<th>Company Name</th>
+							<th>Company Number</th>
+							<th>Contact Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Delete/Edit</th>
+						</tr>
+					</thead>
+					<tr id="tr-{{x.id}}" class="trbg" ng-repeat="x in list2 | filter:search">
+						<td>{{x.companyname}}</td>
+						<td>{{x.companynumber}}</td>
+						<td>{{x.contactname}}</td>
+						<td>{{x.email}}</td>
+						<td>{{x.phone}}</td>
+						<td><button style="background-color: red" class="btn btn-default btn-sm" ng-click="deleterow(x.id)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+						<button style="background-color: lightblue" class="btn btn-default btn-sm" ng-click="editrow(x.id)"><span class="glyphicon glyphicon-pencil"> Edit</span></button></td>
+					</tr>
+				</table>
+		</div>	
+		<div style="display: none" id="showForm">
+				<table class="tablecontent">
+					<tr>
+						<td colspan="3" align="left">
+							Company Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="companyname" placeholder="Company Name">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							Company Number: 
+						</td>
+						<td>
+							<input type="text" ng-model="companynumber" placeholder="Company Number">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							Contact Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="contactname" placeholder="Contact Name">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							Email: 
+						</td>
+						<td>
+							<input type="text" ng-model="email" placeholder="Email">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							Phone: 
+						</td>
+						<td>
+							<input type="text" ng-model="phone" placeholder="Phone">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							User Name: 
+						</td>
+						<td>
+							<input type="text" ng-model="username" placeholder="User Name">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="left">
+							Password: 
+						</td>
+						<td>
+							<input type="text" ng-model="password" placeholder="Password">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button class="createshow btn btn-default btn-sm" ng-click="create()"><span class="glyphicon glyphicon-plus"> Add</span></button><br>
+							<button class="editshow btn btn-default btn-sm" style="background-color:lightblue" ng-click="edit()"><span class="glyphicon glyphicon-pencil"> Save</span></button><br>
+							<button class="resetshow btn btn-default btn-sm" style="background-color:red" ng-click="resetform()"><span class="glyphicon glyphicon-repeat"></span> Reset</button>
+						</td>
+					</tr>
+				</table>
+				
+		</div>
+		<button class="btn btn-default btn-sm" ng-click="add()"><span class="glyphicon glyphicon-plus"></span> Create Customer</button>		
+	</div>

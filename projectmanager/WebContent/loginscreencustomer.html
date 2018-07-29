@@ -1,0 +1,28 @@
+<!-- this is the customer opening screen HTML -->
+<meta charset="windows-1255">
+	<div class="table1" border="1">
+		<h1>רשימת פרויקטים פעילים</h1>
+			<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+				<table class="table2 tablecontent table table-striped table-bordered">
+					<thead>
+						<tr class="trbg">
+							<th>Project Name</th>
+							<th>Customer</th>
+							<th>Customer Project Manager</th>
+							<th>Project Manager Email</th>
+							<th>Project Manager Phone</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+						</tr>
+					</thead>
+					<tr class="trbg" ng-repeat="x in list | filter:search">
+						<td>{{x.projectname}}</td>
+						<td>{{x.customer.companyname}}</td>
+						<td>{{x.customerprojectmanager}}</td>
+						<td>{{x.projectmanageremail}}</td>
+						<td>{{x.projectmanagerphone}}</td>
+						<td>{{x.startdate}}</td>
+						<td>{{x.enddate}}</td>
+					</tr>
+				</table>
+	</div>

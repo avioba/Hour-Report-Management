@@ -1,0 +1,63 @@
+/**
+ * Use this CSS file to manage the design of all the screens .
+ */
+body{
+	max-width:1024px;
+	text-align: center;
+	font-family:ariel;
+	font-size:medium;
+	background-color: #06b6f9;
+}
+img{
+	max-height: 100%;
+	max-width: 100%;
+}
+th{
+	background-color: yellow;
+	color: blue;
+}
+.hidden{
+	visibility: hidden;
+	display: none;
+}
+.login{
+	padding: 250px;
+}
+.trbg{
+	background-color: white;
+}
+.table1{
+	width: 1024px;
+}
+.table2{
+	width: 50%;
+}
+.title{
+	text-align: center;
+}
+.logout{
+	text-align: left;
+}
+.tdbtn1{
+	text-align: left;
+}
+.btn1{
+	padding-right: 30px;
+	margin-right: 10px;
+}
+.menu{
+	font-size:large;
+	padding: 10px;
+}
+.content{
+	padding:80px;
+	direction:ltr;
+	
+}
+.footer{
+	padding: 10px;
+}
+.tablecontent{
+	text-align:left;
+	padding: 50px;
+}

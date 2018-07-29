@@ -1,0 +1,81 @@
+<!-- this is the employee opening screen HTML -->
+<meta charset="windows-1255">
+<div>
+	<div>
+		<span class="glyphicon glyphicon-search"></span>search: <input type="text" ng-model="search" >
+		<table class="tablecontent table table-striped table-bordered" width=70%>
+			<thead>
+				<tr class="trbg">
+					<th>Project</th>
+					<th>Date</th>
+					<th>Start Hour</th>
+					<th>End Hour</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tr class="trbg" ng-repeat="x in arr | filter:search">
+				<td>{{ x.project.projectname }}</td>
+				<td>{{ x.date }}</td>
+				<td>{{ x.starthour }}</td>
+				<td>{{ x.endhour }}</td>
+				<td>{{ x.description }}</td>
+			</tr>
+		</table>
+	</div>
+	<input type="submit" value="add report" ng-click="add()">
+	<div style="display: none" id="showForm" class="table1" border="1">
+		<table class="tablecontent">
+			<tr>
+				<td align="left">
+					 Date: 
+				</td>
+				<td>
+					<input type="date" name="date" ng-model="date" id="datepicker">
+				</td>
+			</tr>
+			<tr>	
+				<td align="left">
+		   			 Start hour: 
+				</td>
+				<td>
+					<input type="time" name="start hour" max="{{endtime}}" min="{{starttime}}" id="starthour">
+				</td>
+			</tr>
+			<tr>
+				<td align="left">
+					End hour:
+				</td>
+				<td>
+					<input type="time" name="end hour" max="{{endtime}}" min="{{starttime}}" id="endhour">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Project: 
+				</td>
+				<td>
+					<select ng-model="project">
+						<option value="{{project.id}}" ng-repeat="project in selectprojectbyemployee">
+							{{project.projectname}}
+						</option>	
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Description: 
+				</td>
+				<td>
+					<input type="text" ng-model="description">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="add" ng-click="create()"><br>
+					<input type="submit" value="return" style="background-color: red" ng-click="returnform()">
+				</td>
+			</tr>
+		</table>
+		</div>
+							
+</div>

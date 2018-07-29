@@ -1,0 +1,38 @@
+<!-- this is the login HTML -->
+<div>
+	<ng-form name="loginForm">
+	<table class="table1">
+		<tr>
+			<td class="content" colspan="3" id="one">
+				<div>
+					<table class="login">
+						<tr>
+							<td>User Name:</td>
+							<td><span class="glyphicon glyphicon-user"></span><input type="text" ng-model="username" required></td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td><span class="glyphicon glyphicon-lock"></span><input type="password" ng-model="password" required></td>
+						</tr>
+						<tr>
+							<td>
+								<button style="background-color: lightblue" class="btn btn-default btn-sm" ng-click="getuser()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+							</td>
+							<td>
+								<button style="background-color: lightgreen" ng-click="forgotpassword()"> Forgot Password?</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="display: none" id="showForm">
+					<form>
+						<p>set your user name here</p>
+						<input type="text" ng-model="username1"> <input
+							type="submit" value="Send" ng-click="getpassword()">
+					</form>
+				</div>
+			</td>
+		</tr>
+	</table>
+	</ng-form>
+</div>

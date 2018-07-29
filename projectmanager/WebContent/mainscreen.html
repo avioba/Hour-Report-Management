@@ -1,0 +1,827 @@
+<!-- this is the main screen HTML :
+ - the main HTML screen .
+ - all the JavaScrit functions .
+ -->
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta charset="windows-1255">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> 
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+	var userid;
+		var app = angular.module("myApp", ["ngRoute"]);
+			app.config(function($routeProvider) {
+			$routeProvider.when("/", {
+				templateUrl : "login.html",
+				controller: "loginCtrl"
+			}).when("/employee", {
+				templateUrl : "loginscreenemployee.html",
+				controller: "loginScreenEmployeeCtrl"
+			}).when("/manager", {
+				templateUrl : "loginscreenmanager.html",
+				controller: "loginScreenManagerCtrl"
+			}).when("/customer", {
+				templateUrl : "loginscreencustomer.html",
+				controller: "loginScreenCustomerCtrl"
+			}).when("/employeesmanagement", {
+				templateUrl : "employeesmanagement.html",
+				controller: "employeesManagementCtrl"
+			}).when("/customersmanagement", {
+				templateUrl : "customersmanagement.html",
+				controller: "customersManagementCtrl"
+			}).when("/projectsmanagement", {
+				templateUrl : "projectsmanagement.html",
+				controller: "projectsManagementCtrl"
+			}).when("/hourreport", {
+				templateUrl : "hourreport.html",
+				controller: "hourReportCtrl"
+			}).when("/systemsettings", {
+				templateUrl : "systemsettings.html",
+				controller: "systemSettingsCtrl"
+			});
+	
+		});
+			
+		app.controller("loginScreenEmployeeCtrl", function ($scope, $http) {
+			console.log("you clicked employee");
+			$http.get("http://localhost/projectmanager/rest/props/getHours")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.reporthours = response.data;
+		    	
+		    	var hours = $scope.reporthours;
+		    	$scope.arr = hours.split(',');
+		    	$scope.starttime = $scope.arr[0];
+		    	$scope.endtime = $scope.arr[1];
+		    	console.log($scope.starttime);
+		    	console.log($scope.endtime);
+		    });
+			$http.get("http://localhost/projectmanager/rest/hourreport/getHourReportByDate?userid="+userid)
+		    .then(function(response) {
+		    	$scope.arr = response.data;
+		    });
+			$http.get("http://localhost/projectmanager/rest/employee/getAllEmployees")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list1 = response.data;
+		    });
+			$http.get("http://localhost/projectmanager/rest/project/getProjectsByEmployee?userid="+userid)
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.selectprojectbyemployee = response.data;
+		    });
+			$scope.add = function() {
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'add'
+			    });
+			}
+			$scope.create = function(){
+				var date = $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}).val();
+				 $http.get("http://localhost/projectmanager/rest/hourreport/createHourreport?employee="+userid
+						 +"&project="+$scope.project+
+						 "&date="+date+
+						 "&starthour="+$("#starthour").val()+
+						 "&endhour="+$("#endhour").val()+
+						 "&description="+$scope.description)
+				    .then(function(response) {
+				    	$scope.arr = response.data;
+				    if($scope.arr != null){
+				    	$http.get("http://localhost/projectmanager/rest/hourreport/getHourReportByDate?userid="+userid)
+					    .then(function(response) {
+					    	console.log(response.data);
+					    	$scope.arr = response.data;
+				
+					    });
+					 $scope.project = " ";
+				     $scope.description = " ";
+				    }	 
+				 });
+				 
+				 $('#showForm').dialog('destroy');
+			}	
+			$scope.returnform = function(){
+				 $scope.project = " ";
+				 $scope.description = " ";
+			}
+		}); 
+		
+		app.controller("loginScreenManagerCtrl", function ($scope,$http) {
+			  $('input[type=radio][name=changeTable]').on('change', function(){
+			      
+				  switch($(this).val()){
+			          case 'activeproject' :
+			        	  $http.get("http://localhost/projectmanager/rest/project/getActiveProjects")
+			          .then(function(response) {
+			          console.log(response.data);
+			            $scope.list = response.data;
+			            $(".activeproject1").show();
+		    			$(".projectclosetoend1").hide();
+		    			$(".activeorpopularcustomer1").hide();
+			            });
+			              break;
+			          case 'projectclosetoend' :
+			        	  $http.get("http://localhost/projectmanager/rest/project/getProjectsAboutToFinish")
+			          .then(function(response) {
+			          console.log(response.data);
+			            $scope.list1 = response.data;
+			            $(".activeproject1").hide();
+		    			$(".projectclosetoend1").show();
+		    			$(".activeorpopularcustomer1").hide();
+			            });
+			              break;
+			          case 'active/popularcustomer' :
+			        	  $http.get("http://localhost/projectmanager/rest/customer/getPopularCustomers")
+			          .then(function(response) {
+			          console.log(response.data);
+			            $scope.list2 = response.data;
+			            $(".activeproject1").hide();
+		    			$(".projectclosetoend1").hide();
+		    			$(".activeorpopularcustomer1").show();
+		    			
+		    			$('input[type=radio][name=changeTable1]').on('change', function(){
+		  			      switch($(this).val()){
+		  			          case 'activecustomer' :
+		  			        	  $http.get("http://localhost/projectmanager/rest/customer/getActiveCustomer")
+		  			          .then(function(response) { 
+		  			        	  console.log(response.data); 
+		  			        	  $scope.list3 = response.data; 
+		  			        	  $(".activecustomer1").show(); 
+		  			        	  $(".popularcustomer1").hide();
+		  			        	  $(".activeproject1").hide();
+		 		    			  $(".projectclosetoend1").hide();
+				    			});
+		  			            break;
+		  			        case 'popularcustomer' :
+		  			        	  $http.get("http://localhost/projectmanager/rest/customer/getPopularCustomers")
+		  			        	  .then(function(response) {
+		  			        				  console.log(response.data);
+		  			        				  $scope.list4 = response.data; 
+		  			        				  $(".activecustomer1").hide();
+		  			        				  $(".popularcustomer1").show();
+		  			        				  $(".activeproject1").hide();
+		  					    			  $(".projectclosetoend1").hide();
+		  			        				  });
+		  			        	break;
+		  			        	}
+			         	     });
+			                  
+			                });
+			        	    break;           	  
+			        	  
+			}
+		  });
+		});
+		app.controller("loginScreenCustomerCtrl", function ($scope,$http) {
+			console.log("you clicked customer");
+			$http.get("http://localhost/projectmanager/rest/project/getCustomerActiveProjects?userid="+userid)
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list = response.data;
+		    });	
+		});	
+		app.controller("employeesManagementCtrl", function ($scope,$http) {
+			console.log("you clicked employeesmanagement");
+			$http.get("http://localhost/projectmanager/rest/employee/getAllEmployees")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list1 = response.data;
+		    });
+			$http.get("http://localhost/projectmanager/rest/project/getAllProjects")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.selectprojectlist = response.data;
+		    });
+			$scope.employeetoproject = function(){
+				$http.get("http://localhost/projectmanager/rest/employeeProject/createEmployeeProject?employeeid="+$scope.employee+"&projectid="+$scope.project)
+			    .then(function(response) {
+			    console.log(response.data);
+			    	var response = response.data;
+			    	
+				 });
+			}
+			 $scope.deleterow = function(id){
+				 
+				 var confirm1 =confirm('Are u sure ?');
+				 if(confirm1 === true ){
+					 $http.get("rest/employee/deleteEmployee?id="+id)
+					    .then(function(response) {
+					    console.log(response.data);
+					    	var response = response.data;
+					    	if(response.msg=="ok"){
+								 $("#tr-"+id).remove();
+							 }
+					    }); 
+				 }
+				
+			} 
+			
+			$scope.editrow = function(id){
+			 	
+				$(".createshow").hide();
+    			$(".editshow").show();
+    			$(".resetshow").show();
+				
+				var index = getSelectedIndex(id);
+				var x = $scope.list1[index];
+				$scope.firstname = x.firstname;
+				$scope.lastname = x.lastname;
+				$scope.email = x.email;
+				$scope.phone = x.phone;
+				$scope.user = x.user;
+				
+				 $('#showForm').dialog({
+				        autoOpen: true,
+				        title: 'Edit Employee'
+				    });
+				    
+				
+				$scope.edit = function(){
+					$http.get("http://localhost/projectmanager/rest/employee/updateEmployee?id="+id+"&firstname="+$scope.firstname+"&lastname="+$scope.lastname+"&email="+$scope.email+"&phone="+$scope.phone+"&user="+$scope.user)
+				    .then(function(response){
+				    	var response = response.data;
+				    	if(response.msg=="ok"){
+				    		$scope.list1[index].firstname = $scope.firstname;
+							$scope.list1[index].lastname = $scope.lastname;
+							$scope.list1[index].email = $scope.email;
+							$scope.list1[index].phone = $scope.phone;
+							$scope.list1[index].user = $scope.user;
+							
+							$('#showForm').dialog('destroy');
+						 }else{
+							 alert("The row was not updated!");
+						 }
+				    	
+				    });
+						
+			};
+			
+			} 
+			function getSelectedIndex(id){
+				for(var i=0; i<$scope.list1.length; i++)
+					if($scope.list1[i].id==id)
+						return i;
+					return -1;	
+			};
+			$scope.add = function() {
+				
+				$(".createshow").show();
+    			$(".editshow").hide();
+    			$(".resetshow").show();
+    			
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'Create Employee'
+			    });
+			}
+			$scope.create = function(id){
+				 $http.get("http://localhost/projectmanager/rest/employee/createEmployee?firstname="+$scope.firstname+"&lastname="+$scope.lastname+"&email="+$scope.email+"&phone="+$scope.phone+"&username="+$scope.username+"&password="+$scope.password)
+				    .then(function(response) {
+				    if(response!=null){
+				    	$http.get("http://localhost/projectmanager/rest/employee/getAllEmployees")
+					    .then(function(response) {
+					    	$scope.list1 = response.data;
+					    	
+					    });
+					 
+					 $scope.firstname = " ";
+							$scope.lastname = " ";
+							$scope.email = " ";
+							$scope.phone = " ";
+							$scope.user = " ";
+							$scope.username = " ";
+							$scope.password = " ";
+				    }	 
+				 });
+				 
+				 $('#showForm').dialog('destroy');
+			}	
+			$scope.resetform = function(){
+				$scope.firstname = " ";
+				$scope.lastname = " ";
+				$scope.email = " ";
+				$scope.phone = " ";
+				$scope.user = " ";
+				$scope.username = " ";
+				$scope.password = " ";
+			}
+			 
+		});	
+		
+		app.controller("customersManagementCtrl", function ($scope,$http) {
+			console.log("you clicked customersmanagement");
+			$http.get("http://localhost/projectmanager/rest/customer/getActiveCustomer")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list2 = response.data;
+		    });	
+			$scope.deleterow = function(id){
+				 
+				 var confirm1 =confirm('Are u sure ?');
+				 if(confirm1 === true ){
+					 $http.get("rest/customer/deleteCustomer?id="+id)
+					    .then(function(response) {
+					    console.log(response.data);
+					    	var response = response.data;
+					    	if(response.msg=="ok"){
+								 $("#tr-"+id).remove();
+							 }
+					    }); 
+				 }
+				
+			} 
+			$scope.editrow = function(id){
+				
+				$(".createshow").hide();
+    			$(".editshow").show();
+    			$(".resetshow").show();
+				 
+				var index = getSelectedIndex(id);
+				var x = $scope.list2[index];
+				$scope.companyname = x.companyname;
+				$scope.companynumber = x.companynumber;
+				$scope.contactname = x.contactname;
+				$scope.email = x.email;
+				$scope.phone = x.phone;
+				$scope.user = x.user;
+				
+				 $('#showForm').dialog({
+				        autoOpen: true,
+				        title: 'Edit Customer'
+				    });
+				    
+				
+				$scope.edit = function(){
+					$http.get("rest/customer/updateCustomer?id="+id+"&companyname="+$scope.companyname+"&companynumber="+$scope.companynumber+"&contactname="+$scope.contactname+"&email="+$scope.email+"&phone="+$scope.phone+"&user="+$scope.user)
+				    .then(function(response){
+				    	var response = response.data;
+				    	if(response.msg=="ok"){
+				    		$scope.list2[index].companyname = $scope.companyname;
+							$scope.list2[index].companynumber = $scope.companynumber;
+							$scope.list2[index].contactname = $scope.contactname;
+							$scope.list2[index].email = $scope.email;
+							$scope.list2[index].phone = $scope.phone;
+							$scope.list2[index].user = $scope.user;
+						 }else{
+							 alert("The row was not updated!");
+						 }
+				    	
+				    });
+					
+					$('#showForm').dialog('destroy');
+						
+			};
+			} 
+			function getSelectedIndex(id){
+				for(var i=0; i<$scope.list2.length; i++)
+					if($scope.list2[i].id==id)
+						return i;
+					return -1;	
+			};
+			$scope.add = function() {
+				
+				$(".createshow").show();
+    			$(".editshow").hide();
+    			$(".resetshow").show();
+    			
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'Create Customer'
+			    });
+			}
+			$scope.create = function(id){
+				 $http.get("http://localhost/projectmanager/rest/customer/createCustomer?companyname="+$scope.companyname+"&companynumber="+$scope.companynumber+"&contactname="+$scope.contactname+"&email="+$scope.email+"&phone="+$scope.phone+"&username="+$scope.username+"&password="+$scope.password)
+				    .then(function(response) {
+				    if(response!=null){
+				    	$http.get("http://localhost/projectmanager/rest/customer/getActiveCustomer")
+					    .then(function(response) {
+					    	$scope.list2 = response.data;
+					    	
+					    });
+					 
+					 $scope.companyname = " ";
+							$scope.companynumber = " ";
+							$scope.contactname = " ";
+							$scope.email = " ";
+							$scope.phone = " ";
+							$scope.username = " ";
+							$scope.password = " ";
+				    }	 
+				 });
+				 
+				 $('#showForm').dialog('destroy');
+			}
+			$scope.resetform = function(){
+				$scope.companyname = " ";
+				$scope.companynumber = " ";
+				$scope.contactname = " ";
+				$scope.email = " ";
+				$scope.phone = " ";
+				$scope.username = " ";
+				$scope.password = " ";
+			}
+		});	
+		
+		app.controller("projectsManagementCtrl", function ($scope,$http) {
+			console.log("you clicked projectsmanagement");
+			$http.get("http://localhost/projectmanager/rest/project/getAllProjects")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list3 = response.data;
+		    });	
+			$http.get("http://localhost/projectmanager/rest/customer/getActiveCustomer")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.list2 = response.data;
+		    });	
+			$http.get("http://localhost/projectmanager/rest/employee/getAllEmployees")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	$scope.selectemployeelist = response.data;
+		    });
+			$scope.projecttoemployee = function(){
+				$http.get("http://localhost/projectmanager/rest/employeeProject/createEmployeeProject?employeeid="+$scope.employee+"&projectid="+$scope.project)
+			    .then(function(response) {
+			    console.log(response.data);
+			    	var response = response.data;
+			    	
+				 });
+			}
+			$scope.deleterow = function(id){
+				 
+				 var confirm1 =confirm('Are u sure ?');
+				 if(confirm1 === true ){
+					 $http.get("rest/project/deleteProject?id="+id)
+					    .then(function(response) {
+					    console.log(response.data);
+					    	var response = response.data;
+					    	if(response.msg=="ok"){
+								 $("#tr-"+id).remove();
+							 }
+					    }); 
+				 }
+				
+			} 
+			$scope.editrow = function(id){
+
+				$(".createshow").hide();
+    			$(".editshow").show();
+    			$(".resetshow").show();
+				 
+				 console.log("edit clicked");
+				var index = getSelectedIndex(id);
+				var x = $scope.list3[index];
+				$scope.projectname = x.projectname;
+				$scope.customer = x.customer.companyname;
+				$scope.customerprojectmanager = x.customerprojectmanager;
+				$scope.projectmanageremail = x.projectmanageremail;
+				$scope.projectmanagerphone = x.projectmanagerphone;
+				$scope.startdate = x.startdate;
+				$scope.enddate = x.enddate;
+				
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'Edit Project'
+			    });
+				
+				$scope.edit = function(){
+					$http.get("http://localhost/projectmanager/rest/project/updateProject?id="+id+"&projectname="+$scope.projectname+"&customer="+$scope.customer+"&customerprojectmanager="+$scope.customerprojectmanager+"&projectmanageremail="+$scope.projectmanageremail+"&projectmanagerphone="+$scope.projectmanagerphone+"&startdate="+$scope.startdate+"&enddate="+$scope.enddate)
+				    .then(function(response){
+				    	var response = response.data;
+				    	if(response.msg=="ok"){
+				    		$scope.list3[index].projectname = $scope.projectname;
+							$scope.list3[index].customer = $scope.customer.companyname;
+							$scope.list3[index].customerprojectmanager = $scope.customerprojectmanager;
+							$scope.list3[index].projectmanageremail = $scope.projectmanageremail;
+							$scope.list3[index].projectmanagerphone = $scope.projectmanagerphone;
+							$scope.list3[index].startdate = $scope.startdate;
+							$scope.list3[index].enddate = $scope.enddate;
+						 }else{
+							 alert("The row was not updated!");
+						 }
+				    	
+				    });
+					
+					$('#showForm').dialog('destroy');
+					
+			};
+			} 
+			function getSelectedIndex(id){
+				for(var i=0; i<$scope.list3.length; i++)
+					if($scope.list3[i].id==id)
+						return i;
+					return -1;	
+			};
+			$scope.add = function() {
+
+				$(".createshow").show();
+    			$(".editshow").hide();
+    			$(".resetshow").show();
+    			
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'Create Project'
+			    });
+			}
+			$scope.create = function(id){
+				 $http.get("http://localhost/projectmanager/rest/project/createProject?projectname="+$scope.projectname+"&customer="+$scope.customer+"&customerprojectmanager="+$scope.customerprojectmanager+"&projectmanageremail="+$scope.projectmanageremail+"&projectmanagerephone="+$scope.projectmanagerephone+"&startdate="+$scope.startdate+"&enddate="+$scope.enddate)
+				    .then(function(response) {
+				    
+				    	 $http.get("http://localhost/projectmanager/rest/project/getAllProjects")
+						    .then(function(response) {
+						    	$scope.list3 = response.data;
+						    	
+						    });
+						 
+								$scope.projectname = " ";
+								$scope.customer = " ";
+								$scope.customerprojectmanager = " ";
+								$scope.projectmanageremail = " ";
+								$scope.projectmanagerphone = " ";
+								$scope.startdate = " ";
+								$scope.enddate = " ";
+						 
+				 });
+				 
+				 $('#showForm').dialog('destroy');
+			}
+			$scope.resetform = function(){
+				$scope.projectname = " ";
+				$scope.customer = " ";
+				$scope.customerprojectmanager = " ";
+				$scope.projectmanageremail = " ";
+				$scope.projectmanagerphone = " ";
+				$scope.startdate = " ";
+				$scope.enddate = " ";
+			}
+		});
+		
+		app.controller("hourReportCtrl", function ($scope,$http) {
+			console.log("you clicked hourreport");
+			$http.get("http://localhost/projectmanager/rest/user/get?id="+userid)
+		    .then(function(response) {
+		    console.log(response.data);
+		    	var user = response.data;
+		    	if(user.type=="employee"){
+		    		$(".employeetable").show();
+		    		$(".customertable").hide();
+		    		$(".managertable").hide();
+		    		
+		    		 $http.get("http://localhost/projectmanager/rest/hourreport/getHourReportByEmployeeUser?userid="+userid)
+					    .then(function(response) {
+					    	$scope.employeehr = response.data;
+					    	
+					    });
+		    		 $http.get("http://localhost/projectmanager/rest/project/getProjectsByEmployee?userid="+userid)
+			 		    .then(function(response) {
+			 		    console.log(response.data);
+			 		    	$scope.selectprojectlist = response.data;
+			 		    });
+		    		 $scope.showReport = function(){
+			 				
+			 				if($scope.project == undefined){
+			 					$scope.project=0;
+			 				}
+			 				
+			 					$http.get("http://localhost/projectmanager/rest/hourreport/getYearAndMonthByEmployee?userid="+userid+"&yearandmonth="+$("#yearandmonth").val()+"&project="+$scope.project)
+			 							.then(function(response) {
+			 						     $scope.employeehr = response.data;
+			 						     console.log($scope.employeehr);
+			 						     
+			 					});
+			 			
+			 			    };	  
+		    	}
+		    	if(user.type=="customer"){
+		    		$(".employeetable").hide();
+		    		$(".customertable").show();
+		    		$(".managertable").hide();
+		    		
+		    		 $http.get("http://localhost/projectmanager/rest/hourreport/getHourReportByCustomerUser?userid="+userid)
+					    .then(function(response) {
+					    	$scope.customerhr = response.data;
+					    	
+					    });
+		    		 $http.get("http://localhost/projectmanager/rest/project/getProjectsByCustomer?userid="+userid)
+			 		    .then(function(response) {
+			 		    console.log(response.data);
+			 		    	$scope.selectprojectlist = response.data;
+			 		    });
+		    		 $scope.showReport = function(){
+			 				
+			 				if($scope.project == undefined){
+			 					$scope.project=0;
+			 				}
+			 				
+			 					$http.get("http://localhost/projectmanager/rest/hourreport/getYearAndMonthByCustomer?userid="+userid+"&yearandmonth="+$("#yearandmonth").val()+"&project="+$scope.project)
+			 							.then(function(response) {
+			 						     $scope.customerhr = response.data;
+			 						     console.log($scope.customerhr);
+			 						     
+			 					});
+			 			
+			 			    };	  
+		    		
+		    	}
+		    	if(user.type=="manager"){
+		    		$(".employeetable").hide();
+		    		$(".customertable").hide();
+		    		$(".managertable").show();
+		    		
+		    		 $http.get("http://localhost/projectmanager/rest/hourreport/getAllHourreports")
+					    .then(function(response) {
+					    	$scope.allhr = response.data;
+					    	
+					    });
+		    		 $http.get("http://localhost/projectmanager/rest/employee/getAllEmployees")
+		 		    .then(function(response) {
+		 		    console.log(response.data);
+		 		    	$scope.selectemployeelist = response.data;
+		 		    });
+		 			$http.get("http://localhost/projectmanager/rest/project/getAllProjects")
+		 		    .then(function(response) {
+		 		    console.log(response.data);
+		 		    	$scope.selectprojectlist = response.data;
+		 		    });
+		 			$http.get("http://localhost/projectmanager/rest/customer/getAllCustomer")
+		 		    .then(function(response) {
+		 		    console.log(response.data);
+		 		    	$scope.selectcustomerlist = response.data;
+		 		    });
+		 			$scope.showReport = function(){
+		 				
+		 				if($scope.employee == undefined){
+		 					$scope.employee=0;
+		 				}
+		 				if($scope.project == undefined){
+		 					$scope.project=0;
+		 				}
+		 				if($scope.customer == undefined){
+		 					$scope.customer=0;
+		 				} 
+		 				// Need To Check -- How to bring only the projects associated with a particular employee 
+		 					$http.get("http://localhost/projectmanager/rest/hourreport/getHourReportByYearAndMonth?yearandmonth="+$("#yearandmonth").val()+
+		 							 "&employee="+$scope.employee+
+		 							 "&project="+$scope.project+
+		 							 "&customer="+$scope.customer)
+		 							.then(function(response) {
+		 						     $scope.allhr = response.data;
+		 						     console.log($scope.allhr);
+		 						     
+		 					});
+		 			
+		 			    };	  
+		    	}
+		    });	
+		});	
+		
+		app.controller("loginCtrl", function ($scope,$http,$location) {
+			console.log("loginCtrl");
+			$(".hidemenu").hide();
+			$scope.getuser = function(){
+				console.log("$scope.getuser");
+				$http.get("http://localhost/projectmanager/rest/user/getUser?username="+$scope.username+"&password="+$scope.password)
+			    .then(function(response){
+			    	console.log(response.data);
+			    	var user = response.data;
+			    	userid = user.id;
+			    	console.log(userid);
+			    	
+			    	if(user!=null){
+			    		if(user.type == "customer"){
+			    			$(".hidemenu").show();
+			    			$(".loginscreencustomer").show();
+			    			$(".loginscreenemployee").hide();
+			    			$(".loginscreenmanager").hide();
+			    			$(".hourreport").show();
+			    			 $location.path('/customer');
+			    		};
+			    		if(user.type == "employee"){
+			    			$(".hidemenu").show();
+			    			$(".loginscreencustomer").hide();
+			    			$(".loginscreenemployee").show();
+			    			$(".loginscreenmanager").hide();
+			    			$(".hourreport").show();
+			    			 $location.path('/employee');
+			    		};
+			    		if(user.type == "manager"){
+			    			$(".hidemenu").show();
+			    			$(".loginscreencustomer").hide();
+			    			$(".loginscreenemployee").hide();
+			    			$(".loginscreenmanager").show();
+			    			$(".hourreport").show();
+			    			 $location.path('/manager');
+			    		};
+			    	};
+			    	
+			    	if(user == ""){
+			    		alert("user does not exist");
+			    	}
+			    });
+			};
+			
+			$scope.forgotpassword = function() {
+				$('#showForm').dialog({
+			        autoOpen: true,
+			        title: 'Forgot Password'
+			    });
+			}
+			
+			$scope.getpassword = function() {
+				$http.get("http://localhost/projectmanager/rest/user/forgotPassword?username="+$scope.username1)
+			    .then(function(response) {
+			    	$scope.mypassword = response.data;
+			    	console.log($scope.mypassword);
+			    	$('#showForm').dialog({
+				        autoOpen: false,
+				        title: 'Forgot Password'
+				    });
+			    });
+			}
+		});	
+		
+		app.controller("systemSettingsCtrl", function ($scope,$http) {
+			$http.get("http://localhost/projectmanager/rest/props/getHours")
+		    .then(function(response) {
+		    console.log(response.data);
+		    	var hours = response.data;
+		    	$scope.arr = hours.split(',');
+		    	$scope.starttime = $scope.arr[0];
+		    	$scope.endtime = $scope.arr[1];
+		    	console.log($scope.starttime);
+		    	console.log($scope.endtime);
+		    });
+			$scope.sethours = function () {
+				$http.get("http://localhost/projectmanager/rest/props/setHours?starttime="+$("#starttime").val()+"&endtime="+$("#endtime").val())
+			    .then(function(response) {
+			    console.log(response.data);
+			    	$scope.settimereport = response.data;
+			    	console.log($scope.settimereport);
+
+			    	$http.get("http://localhost/projectmanager/rest/props/getHours")
+				    .then(function(response) {
+				    console.log(response.data);    	
+				    	var hours = response.data;
+				    	$scope.arr = hours.split(',');
+				    	$scope.starttime = $scope.arr[0];
+				    	$scope.endtime = $scope.arr[1];
+			   	    });
+				});
+			}
+		});
+		app.controller("logoutCtrl", function ($scope,$http,$location) {
+			$scope.logout = function () {
+				if(confirm("are u sure u want to log out?")==true){
+					$location.path("/");
+					
+				}
+			}
+		 
+		});	
+	</script>
+<link href="allscreens.css" rel ="stylesheet">
+</head>
+<body ng-controller="logoutCtrl">
+	<div>
+		<table class="table1" border="1">
+			<tr>
+				<td class="logout"><button class="hidemenu btn btn-default btn-sm" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</button></td>
+				<td class="title"><strong>Hour Report A.W</strong></td>
+				<td bgcolor="black"><img src ="images/a.png"><img src="images/download.png"></td>
+			</tr>
+			<tr>
+				<td colspan="3" class="hidemenu">
+					<table width="100%">
+						<tr class="trbg">
+							<td class="menu loginscreenemployee"><a href="#!employee">Employee</a></td>
+							<td class="menu loginscreenmanager"><a href="#!manager">Manager</a></td>
+							<td class="menu loginscreencustomer"><a href="#!customer">Customer</a></td>
+							<td class="menu loginscreenmanager"><a href="#!employeesmanagement">Employees Management</a></td>
+							<td class="menu loginscreenmanager"><a href="#!customersmanagement">Customers Management</a></td>
+							<td class="menu loginscreenmanager"><a href="#!projectsmanagement">Projects Management</a></td>
+							<td class="menu hourreport"><a href="#!hourreport">Hour Report</a></td>
+							<td class="menu loginscreenmanager"><a href="#!systemsettings">System Settings</a></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="content" colspan="3" id="one">
+					<div ng-view></div>	
+				</td>
+			</tr>
+			<tr>
+				<td class="footer" colspan="3"><strong>Copyright <span class="glyphicon glyphicon-copyright-mark"></span> Avi Wuve, Inc. All Right Reserved</strong></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
